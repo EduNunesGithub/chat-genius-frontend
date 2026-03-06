@@ -13,8 +13,7 @@ const Page: React.FC<PageProps> = async ({
   const searchParams = await searchParamsProp;
 
   return (
-    <main className="mx-auto max-w-6xl p-8">
-      <h1 className="mb-6 text-2xl font-semibold">Scripts</h1>
+    <main className="flex flex-col h-full p-4 w-full">
       <ListScripts searchParams={searchParams} />
     </main>
   );

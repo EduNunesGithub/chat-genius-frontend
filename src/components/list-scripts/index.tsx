@@ -4,6 +4,8 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { FiltersSkeleton } from "@/components/list-scripts/filters/filters-skeleton";
+import { DataTable } from "@/components/list-scripts/data-table";
+import { DataTableSkeleton } from "@/components/list-scripts/data-table/data-table-skeleton";
 import { useListScripts } from "@/hooks/use-list-scripts";
 
 export type ListScriptsProps = {
@@ -19,14 +21,19 @@ const Filters = dynamic(
 );
 
 export const ListScripts: React.FC<ListScriptsProps> = ({ searchParams }) => {
-  const { parsed, updateParams } = useListScripts({
+  const { query, parsed, updateParams } = useListScripts({
     searchParams: searchParams,
   });
 
   return (
-    <section>
-      <span>{JSON.stringify(searchParams)}</span>
+    <section className="flex flex-1 flex-col gap-4 items-start w-full">
       <Filters parsed={parsed} updateParams={updateParams} />
+
+      {query.status === "success" ? (
+        <DataTable data={query.data} updateParams={updateParams} />
+      ) : (
+        <DataTableSkeleton />
+      )}
     </section>
   );
 };

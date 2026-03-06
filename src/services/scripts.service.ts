@@ -1,9 +1,13 @@
 import { queryOptions } from "@tanstack/react-query";
 import * as z from "zod";
 
+export type GetScriptsResponseSchema = z.infer<typeof getScriptsResponseSchema>;
+
 export type GetScriptsSearchParamsSchema = z.infer<
   typeof getScriptsSearchParamsSchema
 >;
+
+export type ScriptSchema = z.infer<typeof scriptSchema>;
 
 export const imperatives = [
   "todas",
@@ -51,7 +55,8 @@ export async function getScripts(params: GetScriptsSearchParamsSchema) {
   for (const k in parsed) {
     const key = k as keyof typeof parsed;
     const value = parsed[key];
-    if (value !== undefined) url.searchParams.set(key, String(value));
+    if (value !== undefined && value !== "todos" && value !== "todas")
+      url.searchParams.set(key, String(value));
   }
 
   const response = await fetch(url.toString());

@@ -25,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="flex h-dvh w-full">
         <LayoutClient>{children}</LayoutClient>
       </body>
     </html>

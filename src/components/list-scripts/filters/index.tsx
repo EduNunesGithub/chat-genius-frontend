@@ -92,7 +92,7 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
             clearTimeout(titleTimeout.current ?? undefined);
             titleTimeout.current = setTimeout(() => {
               updateParams({ title: e.target.value, page: 1 });
-            }, 250);
+            }, 1000);
           }}
           placeholder="Alterar cor..."
           type="text"

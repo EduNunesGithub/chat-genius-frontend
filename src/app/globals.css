@@ -118,7 +118,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 tracking-wider;
+    @apply antialiased border-border min-h-0 min-w-0 outline-ring/50 tracking-wider;
   }
 
   body {
