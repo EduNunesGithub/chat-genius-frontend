@@ -1,10 +1,12 @@
+import { UseMutationResult } from "@tanstack/react-query";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,19 +26,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  DeleteScriptParamsSchema,
   GetScriptsResponseSchema,
   getScriptsSearchParamsSchema,
   ScriptSchema,
 } from "@/services/scripts.service";
 
+type Columns = (arg0: {
+  mutationDeleteScripts: DataTableProps["mutationDeleteScripts"];
+}) => ColumnDef<ScriptSchema>[];
+
 type DataTableProps = {
   data: GetScriptsResponseSchema;
+  mutationDeleteScripts: UseMutationResult<
+    void,
+    Error,
+    DeleteScriptParamsSchema,
+    unknown
+  >;
   updateParams: (
     next: Partial<z.input<typeof getScriptsSearchParamsSchema>>,
   ) => void;
 };
 
-const columns: ColumnDef<ScriptSchema>[] = [
+const columns: Columns = ({ mutationDeleteScripts }) => [
   {
     accessorKey: "layout",
     header: "Layout",
@@ -79,11 +92,13 @@ const columns: ColumnDef<ScriptSchema>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(id)}>
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => mutationDeleteScripts.mutate({ id: id })}
+            >
+              <span className="sr-only">Excluir script.</span>
+              <Trash2 className="h-3 text-destructive w-3" />
+            </DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -93,10 +108,14 @@ const columns: ColumnDef<ScriptSchema>[] = [
   },
 ];
 
-export function DataTable({ data, updateParams }: DataTableProps) {
+export function DataTable({
+  data,
+  mutationDeleteScripts,
+  updateParams,
+}: DataTableProps) {
   const table = useReactTable({
     data: data.data,
-    columns,
+    columns: columns({ mutationDeleteScripts }),
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: data.meta.totalPages,
@@ -111,8 +130,13 @@ export function DataTable({ data, updateParams }: DataTableProps) {
 
   return (
     <div className="flex flex-col flex-1 gap-4 items-end w-full">
-      <div className="border flex flex-1 items-start rounded-md w-full">
-        <Table className="flex-1 truncate">
+      <div className="border flex flex-col flex-1 items-start rounded-md w-full">
+        <Table
+          className={twMerge(
+            "flex-1 truncate",
+            !table.getRowModel().rows.length && "h-full",
+          )}
+        >
           <colgroup>
             {table.getAllLeafColumns().map((column) => (
               <col
@@ -165,7 +189,7 @@ export function DataTable({ data, updateParams }: DataTableProps) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns({ mutationDeleteScripts }).length}
                   className="capitalize h-24 px-3 text-center"
                 >
                   No results.

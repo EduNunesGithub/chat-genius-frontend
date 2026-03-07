@@ -1,6 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import * as z from "zod";
 
+export type ApiError = z.infer<typeof ApiErrorSchema>;
+
+export type DeleteScriptParamsSchema = z.infer<typeof deleteScriptParamsSchema>;
+
 export type GetScriptsResponseSchema = z.infer<typeof getScriptsResponseSchema>;
 
 export type GetScriptsSearchParamsSchema = z.infer<
@@ -17,6 +21,15 @@ export const imperatives = [
 ] as const;
 
 export const layouts = ["todos", "003 nova geração", "fiat", "ram"] as const;
+
+export const ApiErrorSchema = z.object({
+  statusCode: z.number(),
+  message: z.union([z.string(), z.array(z.string())]),
+});
+
+export const deleteScriptParamsSchema = z.object({
+  id: z.uuid(),
+});
 
 export const scriptSchema = z.object({
   createdAt: z.string(),
@@ -47,6 +60,22 @@ export const getScriptsSearchParamsSchema = z.object({
   page: z.coerce.number().min(1).optional().catch(undefined),
   title: z.string().optional().catch(undefined),
 });
+
+export async function deleteScript(params: DeleteScriptParamsSchema) {
+  const { id } = deleteScriptParamsSchema.parse(params);
+  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/scripts/${id}`);
+
+  const response = await fetch(url.toString(), { method: "DELETE" });
+
+  if (response.ok) return;
+
+  const json = await response.json();
+  const error = ApiErrorSchema.parse(json);
+  const message = Array.isArray(error.message)
+    ? error.message.join(", ")
+    : error.message;
+  throw new Error(message);
+}
 
 export async function getScripts(params: GetScriptsSearchParamsSchema) {
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/scripts`);
