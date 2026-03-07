@@ -8,13 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const rows = Array.from({ length: 1 });
+const rows = Array.from({ length: 24 });
 
 export const DataTableSkeleton = () => {
   return (
     <div className="flex flex-col flex-1 gap-4 items-end w-full">
       <div className="border flex h-full overflow-hidden rounded-md w-full">
-        <Table className="h-full truncate">
+        <Table className="h-full truncate" skeleton>
           <colgroup>
             <col style={{ minWidth: 96, width: 96 }} />
             <col style={{ minWidth: 96, width: 96 }} />

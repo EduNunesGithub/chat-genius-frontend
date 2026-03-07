@@ -1,7 +1,7 @@
 import React from "react";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { ListScripts } from "@/components/list-scripts";
-import { FiltersSkeleton } from "@/components/list-scripts/filters/filters-skeleton";
+import { CreateScriptForm } from "@/components/create-script-form";
 
 export type PageProps = {
   searchParams: Promise<ReadonlyURLSearchParams>;
@@ -15,6 +15,8 @@ const Page: React.FC<PageProps> = async ({
   return (
     <main className="flex flex-col h-full p-4 w-full">
       <ListScripts searchParams={searchParams} />
+
+      <CreateScriptForm />
     </main>
   );
 };

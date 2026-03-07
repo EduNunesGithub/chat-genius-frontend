@@ -4,11 +4,18 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({
+  className,
+  skeleton,
+  ...props
+}: React.ComponentProps<"table"> & { skeleton?: boolean }) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto h-full"
+      className={cn(
+        "relative w-full overflow-x-auto h-full",
+        skeleton && "overflow-y-hidden overflow-x-hidden",
+      )}
     >
       <table
         data-slot="table"

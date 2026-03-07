@@ -1,7 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
 import * as z from "zod";
 
-export type ApiError = z.infer<typeof ApiErrorSchema>;
+export type ApiError = z.infer<typeof apiErrorSchema>;
+
+export type CreateScriptSchema = z.infer<typeof createScriptSchema>;
 
 export type DeleteScriptParamsSchema = z.infer<typeof deleteScriptParamsSchema>;
 
@@ -13,6 +15,8 @@ export type GetScriptsSearchParamsSchema = z.infer<
 
 export type ScriptSchema = z.infer<typeof scriptSchema>;
 
+export type ScriptStreamEvent = z.infer<typeof scriptStreamEventSchema>;
+
 export const imperatives = [
   "todas",
   "adicionar",
@@ -22,9 +26,17 @@ export const imperatives = [
 
 export const layouts = ["todos", "003 nova geração", "fiat", "ram"] as const;
 
-export const ApiErrorSchema = z.object({
+export const apiErrorSchema = z.object({
   statusCode: z.number(),
   message: z.union([z.string(), z.array(z.string())]),
+});
+
+export const createScriptSchema = z.object({
+  description: z.string().min(1, "Description is required"),
+  imperative: z.string().min(1, "Imperative is required"),
+  layout: z.string().min(1, "Layout is required"),
+  src: z.string().min(1, "Source code is required"),
+  title: z.string().min(1, "Title is required"),
 });
 
 export const deleteScriptParamsSchema = z.object({
@@ -53,6 +65,12 @@ export const getScriptsResponseSchema = z.object({
   }),
 });
 
+export const scriptStreamEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("done"), data: scriptSchema }),
+  z.object({ type: z.literal("error"), message: z.string() }),
+  z.object({ type: z.literal("progress"), message: z.string() }),
+]);
+
 export const getScriptsSearchParamsSchema = z.object({
   imperative: z.enum(imperatives).optional().catch(undefined),
   layout: z.enum(layouts).optional().catch(undefined),
@@ -60,6 +78,47 @@ export const getScriptsSearchParamsSchema = z.object({
   page: z.coerce.number().min(1).optional().catch(undefined),
   title: z.string().optional().catch(undefined),
 });
+
+export async function* createScriptStream(
+  params: CreateScriptSchema,
+): AsyncGenerator<ScriptStreamEvent> {
+  const body = createScriptSchema.parse(params);
+  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/scripts/stream`);
+
+  const response = await fetch(url.toString(), {
+    body: JSON.stringify(body),
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok || !response.body) {
+    const json = await response.json();
+    const error = apiErrorSchema.parse(json);
+    const message = Array.isArray(error.message)
+      ? error.message.join(", ")
+      : error.message;
+    throw new Error(message);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      if (!line.startsWith("data: ")) continue;
+      yield scriptStreamEventSchema.parse(JSON.parse(line.slice(6)));
+    }
+  }
+}
 
 export async function deleteScript(params: DeleteScriptParamsSchema) {
   const { id } = deleteScriptParamsSchema.parse(params);
@@ -70,7 +129,7 @@ export async function deleteScript(params: DeleteScriptParamsSchema) {
   if (response.ok) return;
 
   const json = await response.json();
-  const error = ApiErrorSchema.parse(json);
+  const error = apiErrorSchema.parse(json);
   const message = Array.isArray(error.message)
     ? error.message.join(", ")
     : error.message;
