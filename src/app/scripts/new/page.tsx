@@ -1,10 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
 import { CreateScriptFormSkeleton } from "@/components/create-script-form/create-script-form-skeleton";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const CreateScriptForm = dynamic(
   () =>
@@ -16,22 +17,23 @@ const CreateScriptForm = dynamic(
 );
 
 const Page = () => (
-  <main className="flex flex-col h-full p-4 w-full">
-    <header className="flex gap-6 items-center justify-start mb-6 w-full">
-      <Button asChild className="shrink-0" size="icon">
-        <Link href="/scripts">
-          <span className="sr-only">Voltar para lista de scripts.</span>
-          <ArrowLeft />
-        </Link>
-      </Button>
+  <div className="flex flex-col flex-1">
+    <AppHeader
+      actions={
+        <Button asChild size="icon" variant="outline">
+          <Link href="/scripts">
+            <span className="sr-only">Voltar para lista de scripts.</span>
+            <ArrowLeft />
+          </Link>
+        </Button>
+      }
+      title="Criar Novo Script"
+    />
 
-      <h1 className="font-bold text-foreground text-2xl uppercase">
-        Criar Novo Script
-      </h1>
-    </header>
-
-    <CreateScriptForm />
-  </main>
+    <div className="flex flex-col flex-1 overflow-auto p-4">
+      <CreateScriptForm />
+    </div>
+  </div>
 );
 
 export default Page;

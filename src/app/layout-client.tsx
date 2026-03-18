@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useState } from "react";
 
 type LayoutClientProps = {
   children: React.ReactNode;
@@ -13,7 +15,10 @@ export function LayoutClient({ children }: LayoutClientProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>{children}</SidebarInset>
+      </SidebarProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
