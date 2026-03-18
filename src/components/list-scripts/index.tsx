@@ -21,11 +21,9 @@ const Filters = dynamic(
 );
 
 export const ListScripts: React.FC<ListScriptsProps> = ({ searchParams }) => {
-  const { query, mutationDeleteScripts, parsed, updateParams } = useListScripts(
-    {
-      searchParams: searchParams,
-    },
-  );
+  const { query, mutationDeleteScript, parsed, updateParams } = useListScripts({
+    searchParams: searchParams,
+  });
 
   return (
     <section className="flex flex-1 flex-col gap-4 items-start w-full">
@@ -34,7 +32,7 @@ export const ListScripts: React.FC<ListScriptsProps> = ({ searchParams }) => {
       {query.status === "success" ? (
         <DataTable
           data={query.data}
-          mutationDeleteScripts={mutationDeleteScripts}
+          mutationDeleteScript={mutationDeleteScript}
           updateParams={updateParams}
         />
       ) : (

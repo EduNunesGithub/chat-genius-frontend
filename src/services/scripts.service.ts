@@ -17,14 +17,13 @@ export type ScriptSchema = z.infer<typeof scriptSchema>;
 
 export type ScriptStreamEvent = z.infer<typeof scriptStreamEventSchema>;
 
-export const imperatives = [
-  "todas",
-  "adicionar",
-  "alterar",
-  "remover",
-] as const;
+export const imperativeOptions = ["adicionar", "alterar", "remover"] as const;
 
-export const layouts = ["todos", "003 nova geração", "fiat", "ram"] as const;
+export const imperatives = ["todas", ...imperativeOptions] as const;
+
+export const layoutOptions = ["003 nova geração", "fiat", "ram"] as const;
+
+export const layouts = ["todos", ...layoutOptions] as const;
 
 export const apiErrorSchema = z.object({
   statusCode: z.number(),
@@ -32,11 +31,11 @@ export const apiErrorSchema = z.object({
 });
 
 export const createScriptSchema = z.object({
-  description: z.string().min(1, "Description is required"),
-  imperative: z.string().min(1, "Imperative is required"),
-  layout: z.string().min(1, "Layout is required"),
-  src: z.string().min(1, "Source code is required"),
-  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+  imperative: z.enum(imperativeOptions),
+  layout: z.enum(layoutOptions),
+  src: z.url("URL inválida"),
+  title: z.string().min(1, "Título é obrigatório"),
 });
 
 export const deleteScriptParamsSchema = z.object({
@@ -71,11 +70,18 @@ export const scriptStreamEventSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("progress"), message: z.string() }),
 ]);
 
+export const defaultSearchParams = {
+  imperative: "todas" as const,
+  layout: "todos" as const,
+  limit: 10,
+  page: 1,
+};
+
 export const getScriptsSearchParamsSchema = z.object({
-  imperative: z.enum(imperatives).optional().catch(undefined),
-  layout: z.enum(layouts).optional().catch(undefined),
-  limit: z.coerce.number().min(1).max(100).optional().catch(undefined),
-  page: z.coerce.number().min(1).optional().catch(undefined),
+  imperative: z.enum(imperatives).catch(defaultSearchParams.imperative),
+  layout: z.enum(layouts).catch(defaultSearchParams.layout),
+  limit: z.coerce.number().min(1).max(100).catch(defaultSearchParams.limit),
+  page: z.coerce.number().min(1).catch(defaultSearchParams.page),
   title: z.string().optional().catch(undefined),
 });
 
@@ -87,8 +93,8 @@ export async function* createScriptStream(
 
   const response = await fetch(url.toString(), {
     body: JSON.stringify(body),
-    method: "POST",
     headers: { "Content-Type": "application/json" },
+    method: "POST",
   });
 
   if (!response.ok || !response.body) {

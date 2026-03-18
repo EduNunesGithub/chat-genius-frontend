@@ -33,12 +33,12 @@ import {
 } from "@/services/scripts.service";
 
 type Columns = (arg0: {
-  mutationDeleteScripts: DataTableProps["mutationDeleteScripts"];
+  mutationDeleteScript: DataTableProps["mutationDeleteScript"];
 }) => ColumnDef<ScriptSchema>[];
 
 type DataTableProps = {
   data: GetScriptsResponseSchema;
-  mutationDeleteScripts: UseMutationResult<
+  mutationDeleteScript: UseMutationResult<
     void,
     Error,
     DeleteScriptParamsSchema,
@@ -49,7 +49,7 @@ type DataTableProps = {
   ) => void;
 };
 
-const columns: Columns = ({ mutationDeleteScripts }) => [
+const columns: Columns = ({ mutationDeleteScript }) => [
   {
     accessorKey: "layout",
     header: "Layout",
@@ -86,7 +86,7 @@ const columns: Columns = ({ mutationDeleteScripts }) => [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-6 p-0 w-6">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
@@ -94,12 +94,11 @@ const columns: Columns = ({ mutationDeleteScripts }) => [
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={async () => mutationDeleteScripts.mutate({ id: id })}
+              onClick={() => mutationDeleteScript.mutate({ id })}
             >
               <span className="sr-only">Excluir script.</span>
               <Trash2 className="h-3 text-destructive w-3" />
             </DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -110,16 +109,16 @@ const columns: Columns = ({ mutationDeleteScripts }) => [
 
 export function DataTable({
   data,
-  mutationDeleteScripts,
+  mutationDeleteScript,
   updateParams,
 }: DataTableProps) {
   const table = useReactTable({
     data: data.data,
-    columns: columns({ mutationDeleteScripts }),
+    columns: columns({ mutationDeleteScript }),
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: data.meta.totalPages,
-    rowCount: data.meta.limit,
+    rowCount: data.meta.total,
     state: {
       pagination: {
         pageIndex: data.meta.page - 1,
@@ -144,10 +143,8 @@ export function DataTable({
                 style={{
                   minWidth: column.columnDef.size
                     ? column.columnDef.size
-                    : `${100}%`,
-                  width: column.columnDef.size
-                    ? column.columnDef.size
-                    : `${100}%`,
+                    : "100%",
+                  width: column.columnDef.size ? column.columnDef.size : "100%",
                 }}
               />
             ))}
@@ -189,10 +186,10 @@ export function DataTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns({ mutationDeleteScripts }).length}
+                  colSpan={table.getAllColumns().length}
                   className="capitalize h-24 px-3 text-center"
                 >
-                  No results.
+                  Nenhum resultado.
                 </TableCell>
               </TableRow>
             )}

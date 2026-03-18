@@ -1,19 +1,36 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   CreateScriptSchema,
-  ScriptSchema,
+  createScriptSchema,
   createScriptStream,
+  layoutOptions,
+  ScriptSchema,
 } from "@/services/scripts.service";
 
 export const useCreateScript = () => {
-  const queryClient = useQueryClient();
+  const form = useForm<CreateScriptSchema>({
+    defaultValues: {
+      description: "",
+      imperative: "adicionar",
+      layout: layoutOptions[0],
+      src: "",
+      title: "",
+    },
+    resolver: zodResolver(createScriptSchema),
+  });
 
-  const mutation = useMutation({
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const mutationCreateScript = useMutation({
     mutationFn: async (params: CreateScriptSchema): Promise<ScriptSchema> => {
-      const id = toast.loading("Starting...");
+      const id = toast.loading("Iniciando...");
 
       try {
         for await (const event of createScriptStream(params)) {
@@ -29,7 +46,7 @@ export const useCreateScript = () => {
             return event.data;
           }
         }
-        throw new Error("Stream ended without a result");
+        throw new Error("Stream encerrado sem resultado");
       } catch (error) {
         toast.dismiss(id);
         throw error;
@@ -38,9 +55,11 @@ export const useCreateScript = () => {
     onError: ({ message }) => toast.error(message),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scripts"] });
-      toast.success("Script created successfully.");
+      toast.success("Script criado com sucesso.");
+      form.reset();
+      router.push("/scripts");
     },
   });
 
-  return { mutation };
+  return { form, mutationCreateScript };
 };

@@ -1,5 +1,8 @@
 import React from "react";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { ListScripts } from "@/components/list-scripts";
 import { CreateScriptForm } from "@/components/create-script-form";
 
@@ -14,9 +17,20 @@ const Page: React.FC<PageProps> = async ({
 
   return (
     <main className="flex flex-col h-full p-4 w-full">
-      <ListScripts searchParams={searchParams} />
+      <header className="flex gap-6 items-center justify-between mb-6 w-full">
+        <h1 className="font-bold text-foreground text-2xl uppercase">
+          Gerenciamento de Scripts
+        </h1>
 
-      <CreateScriptForm />
+        <Button asChild size="icon">
+          <Link className="shrink-0" href="/scripts/new">
+            <span className="sr-only">Criar novo script.</span>
+            <Plus />
+          </Link>
+        </Button>
+      </header>
+
+      <ListScripts searchParams={searchParams} />
     </main>
   );
 };

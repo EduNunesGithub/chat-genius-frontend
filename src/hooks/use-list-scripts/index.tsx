@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import * as z from "zod";
 import {
+  defaultSearchParams,
   deleteScript,
   getScriptsQueryOptions,
   getScriptsSearchParamsSchema,
@@ -26,12 +27,12 @@ export const useListScripts = ({ searchParams }: UseListScriptsProps) => {
 
   const query = useQuery(getScriptsQueryOptions(parsed));
   const queryClient = useQueryClient();
-  const mutationDeleteScripts = useMutation({
+  const mutationDeleteScript = useMutation({
     mutationFn: deleteScript,
     onError: ({ message }) => toast.error(message),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scripts"] });
-      toast.success("Script deleted successfully.");
+      toast.success("Script excluído com sucesso.");
     },
   });
 
@@ -42,15 +43,19 @@ export const useListScripts = ({ searchParams }: UseListScriptsProps) => {
       for (const k in current) {
         const key = k as keyof typeof current;
         const value = current[key];
-        if (value !== undefined) params.set(key, String(value));
+        const def =
+          defaultSearchParams[key as keyof typeof defaultSearchParams];
+        if (value !== undefined && value !== def)
+          params.set(key, String(value));
       }
-      router.push(`${pathname}?${params.toString()}`);
+      const qs = params.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname);
     },
     [parsed, pathname, router],
   );
 
   return {
-    mutationDeleteScripts,
+    mutationDeleteScript,
     parsed,
     query,
     updateParams,

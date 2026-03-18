@@ -29,7 +29,7 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
       <Field className="gap-1 max-w-48 w-full">
         <FieldLabel>Ação</FieldLabel>
         <Select
-          defaultValue={parsed.imperative}
+          value={parsed.imperative}
           onValueChange={(value) =>
             updateParams({
               imperative: value as (typeof imperatives)[number],
@@ -42,7 +42,7 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {imperatives.filter(Boolean).map((imperative) => (
+              {imperatives.map((imperative) => (
                 <SelectItem
                   className="capitalize"
                   key={imperative}
@@ -59,7 +59,7 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
       <Field className="gap-1 max-w-48 w-full">
         <FieldLabel>Layout</FieldLabel>
         <Select
-          defaultValue={parsed.layout}
+          value={parsed.layout}
           onValueChange={(value) =>
             updateParams({
               layout: value as (typeof layouts)[number],
@@ -68,11 +68,11 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
           }
         >
           <SelectTrigger className="capitalize">
-            <SelectValue placeholder="Escolher o layout" />
+            <SelectValue placeholder="Escolher layout" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {layouts.filter(Boolean).map((layout) => (
+              {layouts.map((layout) => (
                 <SelectItem className="capitalize" key={layout} value={layout}>
                   {layout}
                 </SelectItem>
