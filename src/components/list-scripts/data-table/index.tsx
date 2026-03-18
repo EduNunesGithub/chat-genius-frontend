@@ -6,8 +6,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { MoreHorizontal, Trash2 } from "lucide-react";
-import { twMerge } from "tailwind-merge";
-import z from "zod";
+import * as z from "zod";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,9 +32,9 @@ import {
   ScriptSchema,
 } from "@/services/scripts.service";
 
-type Columns = (arg0: {
+type ColumnsArgs = {
   mutationDeleteScript: DataTableProps["mutationDeleteScript"];
-}) => ColumnDef<ScriptSchema>[];
+};
 
 type DataTableProps = {
   data: GetScriptsResponseSchema;
@@ -49,7 +49,9 @@ type DataTableProps = {
   ) => void;
 };
 
-const columns: Columns = ({ mutationDeleteScript }) => [
+const columns = ({
+  mutationDeleteScript,
+}: ColumnsArgs): ColumnDef<ScriptSchema>[] => [
   {
     accessorKey: "layout",
     header: "Layout",
@@ -85,7 +87,7 @@ const columns: Columns = ({ mutationDeleteScript }) => [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-6 p-0 w-6">
+            <Button className="h-6 p-0 w-6" variant="ghost">
               <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-3 w-3" />
             </Button>
@@ -113,8 +115,8 @@ export function DataTable({
   updateParams,
 }: DataTableProps) {
   const table = useReactTable({
-    data: data.data,
     columns: columns({ mutationDeleteScript }),
+    data: data.data,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: data.meta.totalPages,
@@ -131,7 +133,7 @@ export function DataTable({
     <div className="flex flex-col flex-1 gap-4 items-end w-full">
       <div className="border flex flex-col flex-1 items-start rounded-md w-full">
         <Table
-          className={twMerge(
+          className={cn(
             "flex-1 truncate",
             !table.getRowModel().rows.length && "h-full",
           )}
@@ -166,6 +168,7 @@ export function DataTable({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
@@ -186,8 +189,8 @@ export function DataTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={table.getAllColumns().length}
                   className="capitalize h-24 px-3 text-center"
+                  colSpan={table.getAllColumns().length}
                 >
                   Nenhum resultado.
                 </TableCell>

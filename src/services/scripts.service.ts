@@ -85,6 +85,12 @@ export const getScriptsSearchParamsSchema = z.object({
   title: z.string().optional().catch(undefined),
 });
 
+async function throwApiError(response: Response): Promise<never> {
+  const json = await response.json();
+  const { message } = apiErrorSchema.parse(json);
+  throw new Error(Array.isArray(message) ? message.join(", ") : message);
+}
+
 export async function* createScriptStream(
   params: CreateScriptSchema,
 ): AsyncGenerator<ScriptStreamEvent> {
@@ -97,14 +103,8 @@ export async function* createScriptStream(
     method: "POST",
   });
 
-  if (!response.ok || !response.body) {
-    const json = await response.json();
-    const error = apiErrorSchema.parse(json);
-    const message = Array.isArray(error.message)
-      ? error.message.join(", ")
-      : error.message;
-    throw new Error(message);
-  }
+  if (!response.ok) await throwApiError(response);
+  if (!response.body) throw new Error("Stream sem corpo de resposta");
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
@@ -132,14 +132,7 @@ export async function deleteScript(params: DeleteScriptParamsSchema) {
 
   const response = await fetch(url.toString(), { method: "DELETE" });
 
-  if (response.ok) return;
-
-  const json = await response.json();
-  const error = apiErrorSchema.parse(json);
-  const message = Array.isArray(error.message)
-    ? error.message.join(", ")
-    : error.message;
-  throw new Error(message);
+  if (!response.ok) await throwApiError(response);
 }
 
 export async function getScripts(params: GetScriptsSearchParamsSchema) {
