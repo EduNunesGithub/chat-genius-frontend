@@ -48,8 +48,8 @@ export const scriptSchema = z.object({
   id: z.uuid(),
   imperative: z.string(),
   layout: z.string(),
-  semanticDescription: z.string().nullable(),
-  src: z.string(),
+  semanticDescription: z.string(),
+  src: z.url(),
   title: z.string(),
   updatedAt: z.string(),
 });
