@@ -20,6 +20,8 @@ export function useChat() {
     null,
   );
 
+  console.log(entries);
+
   const sendMessage = useCallback(
     async (content: string) => {
       const history: ChatMessage[] = [

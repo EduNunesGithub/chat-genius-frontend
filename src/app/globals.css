@@ -124,4 +124,69 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .prose-md {
+    @apply flex flex-col gap-2 text-sm;
+  }
+
+  .prose-md a {
+    @apply text-primary underline underline-offset-2;
+  }
+
+  .prose-md blockquote {
+    @apply border-l-2 border-border italic pl-3 text-muted-foreground;
+  }
+
+  .prose-md h1 {
+    @apply font-bold text-base;
+  }
+
+  .prose-md h2 {
+    @apply font-semibold;
+  }
+
+  .prose-md h3 {
+    @apply font-medium;
+  }
+
+  .prose-md hr {
+    @apply border-border;
+  }
+
+  .prose-md li {
+    @apply leading-relaxed pl-1;
+  }
+
+  .prose-md li > ol,
+  .prose-md li > ul {
+    @apply pl-2;
+  }
+
+  .prose-md ol {
+    @apply list-decimal pl-4;
+  }
+
+  .prose-md p {
+    @apply leading-relaxed;
+  }
+
+  .prose-md strong {
+    @apply font-semibold;
+  }
+
+  .prose-md table {
+    @apply border-collapse text-xs w-full;
+  }
+
+  .prose-md td {
+    @apply border border-border p-2;
+  }
+
+  .prose-md th {
+    @apply border border-border font-semibold p-2 text-left;
+  }
+
+  .prose-md ul {
+    @apply list-disc pl-4;
+  }
 }

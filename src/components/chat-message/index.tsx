@@ -1,4 +1,7 @@
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
+import { CodeHighlight } from "@/components/code-highlight";
 import { ChatScriptCard } from "@/components/chat-script-card";
 import { ScriptSchema } from "@/services/scripts.service";
 
@@ -8,6 +11,23 @@ type ChatMessageProps = {
   scripts?: ScriptSchema[];
   streaming?: boolean;
 };
+
+function preprocessMarkdown(content: string): string {
+  return content
+    .split(/(```[\s\S]*?```)/g)
+    .map((part, i) =>
+      i % 2 === 1
+        ? part
+        : part.replace(
+            /<script([^>]*)>([\s\S]*?)<\/script>/g,
+            (original, _attrs, body) => {
+              const trimmed = body.trim();
+              return trimmed ? `\`${trimmed}\`` : `\`${original.trim()}\``;
+            },
+          ),
+    )
+    .join("");
+}
 
 export function ChatMessage({
   content,
@@ -47,10 +67,39 @@ export function ChatMessage({
         )}
 
         {(content || streaming) && (
-          <p className="text-sm whitespace-pre-wrap">
-            {content}
-            {streaming && <span className="animate-pulse">▋</span>}
-          </p>
+          <>
+            {isUser ? (
+              <p className="text-sm whitespace-pre-wrap">{content}</p>
+            ) : (
+              <div className="prose-md">
+                <Markdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ children, href }) => (
+                      <a href={href} rel="noreferrer" target="_blank">
+                        {children}
+                      </a>
+                    ),
+                    code: ({ children, className }) => (
+                      <CodeHighlight
+                        inline={!className}
+                        language={className?.replace("language-", "")}
+                      >
+                        {String(children)}
+                      </CodeHighlight>
+                    ),
+                    ol: ({ children, start }) => (
+                      <ol start={start}>{children}</ol>
+                    ),
+                    pre: ({ children }) => <>{children}</>,
+                  }}
+                >
+                  {preprocessMarkdown(content)}
+                </Markdown>
+                {streaming && <span className="animate-pulse">▋</span>}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
