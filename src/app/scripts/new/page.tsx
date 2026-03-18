@@ -1,7 +1,19 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { CreateScriptForm } from "@/components/create-script-form";
+import { CreateScriptFormSkeleton } from "@/components/create-script-form/create-script-form-skeleton";
 import { Button } from "@/components/ui/button";
+
+const CreateScriptForm = dynamic(
+  () =>
+    import("@/components/create-script-form").then((c) => c.CreateScriptForm),
+  {
+    ssr: false,
+    loading: () => <CreateScriptFormSkeleton />,
+  },
+);
 
 const Page = () => (
   <main className="flex flex-col h-full p-4 w-full">

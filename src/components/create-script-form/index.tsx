@@ -37,7 +37,7 @@ export const CreateScriptForm = () => {
           control={form.control}
           name="imperative"
           render={({ field: { onChange, ...other } }) => (
-            <Field className="gap-2 max-w-48 w-full">
+            <Field className="gap-2 max-w-96 w-full">
               <FieldLabel>Imperativo</FieldLabel>
               <Select {...other} onValueChange={onChange}>
                 <SelectTrigger className="capitalize">
@@ -67,7 +67,7 @@ export const CreateScriptForm = () => {
           control={form.control}
           name="layout"
           render={({ field: { onChange, ...other } }) => (
-            <Field className="gap-2 max-w-48 w-full">
+            <Field className="gap-2 max-w-96 w-full">
               <FieldLabel>Layout</FieldLabel>
               <Select {...other} onValueChange={onChange}>
                 <SelectTrigger className="capitalize">
