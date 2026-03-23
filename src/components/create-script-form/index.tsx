@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -21,9 +19,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateScript } from "@/hooks/use-create-script";
 import { imperativeOptions, layoutOptions } from "@/services/scripts.service";
+import { useId } from "react";
+import { Controller } from "react-hook-form";
 
 export const CreateScriptForm = () => {
-  const id = React.useId();
+  const id = useId();
 
   const { form, mutationCreateScript } = useCreateScript();
 
@@ -102,7 +102,7 @@ export const CreateScriptForm = () => {
           {...form.register("title")}
           className="capitalize"
           id={`title-${id}`}
-          placeholder="Alterar cor..."
+          placeholder="Ex: WhatsApp Flutuante"
           type="text"
         />
         <FieldDescription>

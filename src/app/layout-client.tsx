@@ -4,10 +4,10 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 type LayoutClientProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export function LayoutClient({ children }: LayoutClientProps) {

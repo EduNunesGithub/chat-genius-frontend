@@ -1,9 +1,9 @@
+import { ChatScriptCard } from "@/components/chat-script-card";
+import { CodeHighlight } from "@/components/code-highlight";
+import { cn } from "@/lib/utils";
+import { ScriptSchema } from "@/services/scripts.service";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { cn } from "@/lib/utils";
-import { CodeHighlight } from "@/components/code-highlight";
-import { ChatScriptCard } from "@/components/chat-script-card";
-import { ScriptSchema } from "@/services/scripts.service";
 
 type ChatMessageProps = {
   content: string;
@@ -46,10 +46,10 @@ export function ChatMessage({
     >
       <div
         className={cn(
-          "flex flex-col gap-2 max-w-xl px-4 py-3",
+          "flex flex-col gap-4 max-w-xl p-4",
           isUser
-            ? "bg-primary rounded-2xl rounded-br-sm text-primary-foreground"
-            : "bg-muted rounded-2xl rounded-bl-sm text-foreground",
+            ? "bg-primary rounded-xl rounded-br-sm text-primary-foreground"
+            : "bg-muted rounded-xl rounded-bl-sm text-foreground",
         )}
       >
         {scripts !== undefined && (

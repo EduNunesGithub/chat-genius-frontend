@@ -1,20 +1,20 @@
 "use client";
 
-import React from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ReadonlyURLSearchParams,
-  usePathname,
-  useRouter,
-} from "next/navigation";
-import { toast } from "sonner";
-import * as z from "zod";
 import {
   defaultSearchParams,
   deleteScript,
   getScriptsQueryOptions,
   getScriptsSearchParamsSchema,
 } from "@/services/scripts.service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+} from "next/navigation";
+import { useCallback } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
 
 export type UseListScriptsProps = {
   searchParams: ReadonlyURLSearchParams;
@@ -36,7 +36,7 @@ export const useListScripts = ({ searchParams }: UseListScriptsProps) => {
     },
   });
 
-  const updateParams = React.useCallback(
+  const updateParams = useCallback(
     (next: Partial<z.input<typeof getScriptsSearchParamsSchema>>) => {
       const params = new URLSearchParams();
       const current = { ...parsed, ...next };

@@ -26,7 +26,7 @@ export function CodeHighlight({
           </code>
         ) : (
           <pre
-            className="font-mono mt-2 overflow-x-auto p-3 rounded-md text-xs"
+            className="font-mono overflow-x-auto p-4 rounded-md text-xs"
             style={style}
           >
             {tokens.map((line, i) => (

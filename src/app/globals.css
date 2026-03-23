@@ -126,7 +126,7 @@
   }
 
   .prose-md {
-    @apply flex flex-col gap-2 text-sm;
+    @apply flex flex-col gap-4 text-sm;
   }
 
   .prose-md a {
@@ -134,7 +134,7 @@
   }
 
   .prose-md blockquote {
-    @apply border-l-2 border-border italic pl-3 text-muted-foreground;
+    @apply border-l-2 border-border italic pl-4 text-muted-foreground;
   }
 
   .prose-md h1 {
@@ -142,7 +142,7 @@
   }
 
   .prose-md h2 {
-    @apply font-semibold;
+    @apply font-bold;
   }
 
   .prose-md h3 {
@@ -153,21 +153,12 @@
     @apply border-border;
   }
 
-  .prose-md li {
-    @apply leading-relaxed pl-1;
-  }
-
-  .prose-md li > ol,
-  .prose-md li > ul {
-    @apply pl-2;
+  .prose-md li pre {
+    @apply my-2;
   }
 
   .prose-md ol {
     @apply list-decimal pl-4;
-  }
-
-  .prose-md p {
-    @apply leading-relaxed;
   }
 
   .prose-md strong {
@@ -179,11 +170,11 @@
   }
 
   .prose-md td {
-    @apply border border-border p-2;
+    @apply border border-border p-4;
   }
 
   .prose-md th {
-    @apply border border-border font-semibold p-2 text-left;
+    @apply border border-border font-semibold p-4 text-left;
   }
 
   .prose-md ul {

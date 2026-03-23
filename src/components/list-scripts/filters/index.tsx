@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,15 +13,16 @@ import {
   imperatives,
   layouts,
 } from "@/services/scripts.service";
+import { type FC, useId, useRef } from "react";
 
 export type FiltersProps = {
   parsed: GetScriptsSearchParamsSchema;
   updateParams: (next: Partial<GetScriptsSearchParamsSchema>) => void;
 };
 
-export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
-  const id = React.useId();
-  const titleTimeout = React.useRef<ReturnType<typeof setTimeout>>(null);
+export const Filters: FC<FiltersProps> = ({ parsed, updateParams }) => {
+  const id = useId();
+  const titleTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
   return (
     <form className="flex flex-wrap gap-2 items-center justify-start w-full">
@@ -94,7 +94,7 @@ export const Filters: React.FC<FiltersProps> = ({ parsed, updateParams }) => {
               updateParams({ title: e.target.value, page: 1 });
             }, 1000);
           }}
-          placeholder="Alterar cor..."
+          placeholder="Buscar por título..."
           type="text"
         />
       </Field>

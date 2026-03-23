@@ -1,21 +1,23 @@
-import * as z from "zod";
 import { apiErrorSchema, scriptSchema } from "@/services/scripts.service";
+import * as z from "zod";
 
-export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export type ChatRequest = z.infer<typeof chatRequestSchema>;
 export type ChatResponse = z.infer<typeof chatResponseSchema>;
 export type ChatStreamEvent = z.infer<typeof chatStreamEventSchema>;
 
-export const chatMessageSchema = z.object({
-  content: z.string().min(1, "Mensagem não pode ser vazia"),
-  role: z.enum(["assistant", "user"]),
+export const chatRequestSchema = z.object({
+  conversationId: z.string().uuid().optional(),
+  message: z.string().min(1, "Mensagem não pode ser vazia"),
 });
 
 export const chatResponseSchema = z.object({
+  conversationId: z.string().uuid(),
   message: z.string(),
   scripts: z.array(scriptSchema).nullable(),
 });
 
 export const chatStreamEventSchema = z.discriminatedUnion("type", [
+  z.object({ data: z.string().uuid(), type: z.literal("conversationId") }),
   z.object({ type: z.literal("done") }),
   z.object({ data: z.array(scriptSchema), type: z.literal("scripts") }),
   z.object({ message: z.string(), type: z.literal("error") }),
@@ -24,12 +26,12 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
 ]);
 
 export async function* chatStream(
-  messages: ChatMessage[],
+  params: ChatRequest,
 ): AsyncGenerator<ChatStreamEvent> {
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/chat/stream`);
 
   const response = await fetch(url.toString(), {
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify(params),
     headers: {
       Accept: "text/event-stream",
       "Cache-Control": "no-cache",

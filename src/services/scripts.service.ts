@@ -48,8 +48,8 @@ export const scriptSchema = z.object({
   id: z.uuid(),
   imperative: z.string(),
   layout: z.string(),
-  semanticDescription: z.string(),
-  src: z.url(),
+  semanticDescription: z.string().nullable(),
+  src: z.string(),
   title: z.string(),
   updatedAt: z.string(),
 });
@@ -147,6 +147,7 @@ export async function getScripts(params: GetScriptsSearchParamsSchema) {
   }
 
   const response = await fetch(url.toString());
+  if (!response.ok) await throwApiError(response);
   const data = await response.json();
 
   return getScriptsResponseSchema.parse(data);

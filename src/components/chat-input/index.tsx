@@ -1,9 +1,9 @@
 "use client";
 
-import { type KeyboardEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
+import { type KeyboardEvent, useState } from "react";
 
 type ChatInputProps = {
   disabled: boolean;

@@ -1,13 +1,3 @@
-import { UseMutationResult } from "@tanstack/react-query";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { MoreHorizontal, Trash2 } from "lucide-react";
-import * as z from "zod";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,12 +15,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import {
   DeleteScriptParamsSchema,
   GetScriptsResponseSchema,
   getScriptsSearchParamsSchema,
   ScriptSchema,
 } from "@/services/scripts.service";
+import { UseMutationResult } from "@tanstack/react-query";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+import * as z from "zod";
 
 type ColumnsArgs = {
   mutationDeleteScript: DataTableProps["mutationDeleteScript"];
@@ -96,10 +96,11 @@ const columns = ({
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="text-destructive"
               onClick={() => mutationDeleteScript.mutate({ id })}
             >
-              <span className="sr-only">Excluir script.</span>
-              <Trash2 className="h-3 text-destructive w-3" />
+              <Trash2 />
+              Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

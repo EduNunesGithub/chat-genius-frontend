@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { ChatInput } from "@/components/chat-input";
 import { ChatMessage } from "@/components/chat-message";
 import { useChat } from "@/hooks/use-chat";
 import { AlertCircle, Loader2, MessageSquare } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export function Chat() {
-  const { entries, sendMessage, status, streamContent, streamScripts } =
-    useChat();
+  const {
+    entries,
+    progressMessage,
+    sendMessage,
+    status,
+    streamContent,
+    streamScripts,
+  } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const isStreaming = status === "streaming";
@@ -35,7 +41,9 @@ export function Chat() {
         {isStreaming && !hasStreamContent && (
           <div className="flex gap-2 items-center text-muted-foreground">
             <Loader2 className="animate-spin h-4 w-4" />
-            <span className="text-sm">Analisando...</span>
+            <span className="text-sm">
+              {progressMessage ?? "Analisando..."}
+            </span>
           </div>
         )}
 
