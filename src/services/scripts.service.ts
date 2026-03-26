@@ -99,6 +99,7 @@ export async function* createScriptStream(
 
   const response = await fetch(url.toString(), {
     body: JSON.stringify(body),
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     method: "POST",
   });
@@ -130,7 +131,10 @@ export async function deleteScript(params: DeleteScriptParamsSchema) {
   const { id } = deleteScriptParamsSchema.parse(params);
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/scripts/${id}`);
 
-  const response = await fetch(url.toString(), { method: "DELETE" });
+  const response = await fetch(url.toString(), {
+    credentials: "include",
+    method: "DELETE",
+  });
 
   if (!response.ok) await throwApiError(response);
 }
@@ -146,7 +150,7 @@ export async function getScripts(params: GetScriptsSearchParamsSchema) {
       url.searchParams.set(key, String(value));
   }
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { credentials: "include" });
   if (!response.ok) await throwApiError(response);
   const data = await response.json();
 
