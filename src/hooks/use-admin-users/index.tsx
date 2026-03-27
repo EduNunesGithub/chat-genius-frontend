@@ -14,8 +14,6 @@ export function useAdminUsers() {
     queryKey: ["admin-users"],
   });
 
-  const noop = async (_: unknown) => {};
-
   const mutationBanUser = useMutation({
     mutationFn: async (_userId: string) => {},
     onSuccess: () =>
@@ -37,8 +35,6 @@ export function useAdminUsers() {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
   });
-
-  void noop;
 
   return {
     mutationBanUser,

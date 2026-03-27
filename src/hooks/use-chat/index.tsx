@@ -41,7 +41,7 @@ export function useChat() {
           if (event.type === "conversationId") setConversationId(event.data);
           if (event.type === "progress") setProgressMessage(event.message);
           if (event.type === "token") {
-            text = event.token;
+            text += event.token;
             setStreamContent(text);
           }
           if (event.type === "scripts") {
