@@ -3,23 +3,15 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
-import {
-  LogOut,
-  MessageSquare,
-  ScrollText,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { MessageSquare, ScrollText, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type NavItem = {
   href: string;
@@ -32,21 +24,8 @@ const items: NavItem[] = [
   { href: "/scripts", icon: ScrollText, label: "Scripts" },
 ];
 
-const adminItems: NavItem[] = [
-  { href: "/admin/users", icon: Users, label: "Usuários" },
-];
-
 export function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { data: session } = authClient.useSession();
-  const isAdmin = session?.user?.role === "admin";
-  const navItems = isAdmin ? [...items, ...adminItems] : items;
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/login");
-  };
 
   return (
     <Sidebar collapsible="icon">
@@ -54,7 +33,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map(({ href, icon: Icon, label }) => (
+              {items.map(({ href, icon: Icon, label }) => (
                 <SidebarMenuItem key={href}>
                   <SidebarMenuButton
                     asChild
@@ -74,17 +53,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout} tooltip="Sair">
-              <LogOut />
-              <span>Sair</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }

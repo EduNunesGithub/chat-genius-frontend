@@ -1,74 +1,44 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
 import { type AdminUser } from "@/services/auth.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 export function useAdminUsers() {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryFn: async () => {
-      const { data, error } = await authClient.admin.listUsers({
-        query: { limit: 100, offset: 0 },
-      });
-      if (error) throw new Error(error.message);
-      return data as { total: number; users: AdminUser[] };
-    },
+    queryFn: async (): Promise<{ total: number; users: AdminUser[] }> => ({
+      total: 0,
+      users: [],
+    }),
     queryKey: ["admin-users"],
   });
 
+  const noop = async (_: unknown) => {};
+
   const mutationBanUser = useMutation({
-    mutationFn: async (userId: string) => {
-      const { error } = await authClient.admin.banUser({ userId });
-      if (error) throw new Error(error.message);
-    },
-    onError: ({ message }) => toast.error(message),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Usuário banido.");
-    },
+    mutationFn: async (_userId: string) => {},
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
   });
 
   const mutationRevokeSessions = useMutation({
-    mutationFn: async (userId: string) => {
-      const { error } = await authClient.admin.revokeUserSessions({ userId });
-      if (error) throw new Error(error.message);
-    },
-    onError: ({ message }) => toast.error(message),
-    onSuccess: () => toast.success("Sessões revogadas."),
+    mutationFn: async (_userId: string) => {},
   });
 
   const mutationSetRole = useMutation({
-    mutationFn: async ({
-      role,
-      userId,
-    }: {
-      role: "admin" | "user";
-      userId: string;
-    }) => {
-      const { error } = await authClient.admin.setRole({ role, userId });
-      if (error) throw new Error(error.message);
-    },
-    onError: ({ message }) => toast.error(message),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Função atualizada.");
-    },
+    mutationFn: async (_: { role: "admin" | "user"; userId: string }) => {},
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
   });
 
   const mutationUnbanUser = useMutation({
-    mutationFn: async (userId: string) => {
-      const { error } = await authClient.admin.unbanUser({ userId });
-      if (error) throw new Error(error.message);
-    },
-    onError: ({ message }) => toast.error(message),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Usuário desbanido.");
-    },
+    mutationFn: async (_userId: string) => {},
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
   });
+
+  void noop;
 
   return {
     mutationBanUser,

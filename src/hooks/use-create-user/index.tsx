@@ -1,6 +1,5 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
 import {
   createUserSchema,
   type CreateUserSchema,
@@ -9,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 export function useCreateUser() {
   const form = useForm<CreateUserSchema>({
@@ -21,14 +19,9 @@ export function useCreateUser() {
   const router = useRouter();
 
   const mutationCreateUser = useMutation({
-    mutationFn: async (params: CreateUserSchema) => {
-      const { error } = await authClient.admin.createUser(params);
-      if (error) throw new Error(error.message);
-    },
-    onError: ({ message }) => toast.error(message),
+    mutationFn: async (_params: CreateUserSchema) => {},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Usuário criado com sucesso.");
       form.reset();
       router.push("/admin/users");
     },

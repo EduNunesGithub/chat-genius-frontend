@@ -32,7 +32,6 @@ export async function* chatStream(
 
   const response = await fetch(url.toString(), {
     body: JSON.stringify(params),
-    credentials: "include",
     headers: {
       Accept: "text/event-stream",
       "Cache-Control": "no-cache",

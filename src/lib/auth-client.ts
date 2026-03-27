@@ -1,7 +1,28 @@
-import { adminClient } from "better-auth/client/plugins";
-import { createAuthClient } from "better-auth/react";
+type Session = {
+  session: null;
+  user: null;
+};
 
-export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL!,
-  plugins: [adminClient()],
-});
+function useSession(): { data: Session } {
+  return { data: { session: null, user: null } };
+}
+
+async function noop(): Promise<{ data: null; error: null }> {
+  return { data: null, error: null };
+}
+
+export const authClient = {
+  admin: {
+    banUser: noop,
+    createUser: noop,
+    listUsers: async () => ({ data: { total: 0, users: [] }, error: null }),
+    revokeUserSessions: noop,
+    setRole: noop,
+    unbanUser: noop,
+  },
+  signIn: {
+    email: async () => ({ data: null, error: null }),
+  },
+  signOut: async () => {},
+  useSession,
+};
